@@ -1,4 +1,4 @@
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const dns = require("node:dns").promises;
 dns.setServers(["8.8.8.8", "8.8.4.4"]);
 const express = require("express");
@@ -35,12 +35,33 @@ async function run() {
     const dbCollection = db.collection("Collection");
 
 
+    app.patch("/destination/:id", async(req, res) => {
+      const {id} = req.params
+      const updated = req.body
+      console.log(updated);
+      
+      const result = await dbCollection.updateOne(
+        {_id : new ObjectId(id)},
+        {$set : updated}
+      )
+
+      res.send(result)
+    })
+
+    app.get("/destination/:id", async(req, res) => {
+      const {id} = req.params;
+      const result = await dbCollection.findOne({
+        _id : new ObjectId(id)
+      })
+      res.send(result)
+    })
+
     app.get("/destination", async(req, res) => {
       const result = await dbCollection.find().toArray();
       res.send(result);
     })
 
-    app.post("/admin", async (req, res) => {
+    app.post("/destination", async (req, res) => {
       const postData = req.body;
 
       // console.log("postdata", postData);
