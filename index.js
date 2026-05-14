@@ -2,8 +2,13 @@ const { MongoClient, ServerApiVersion } = require('mongodb');
 const express = require('express');
 const dotenv = require("dotenv");
 dotenv.config();
-const app = express()
+const cors = require('cors');
 const port = process.env.PORT
+
+
+// Adds headers: Access-Control-Allow-Origin: *
+app.use(cors())
+app.use(express.json());
 
 const dns = require('node:dns').promises;
 dns.setServers(['8.8.8.8', '8.8.4.4']);
@@ -26,6 +31,23 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
+     const db = client.db("WonderLastDev");
+     const dbCollection = db.collection("Collection");
+
+
+
+    app.post('/admin', async(req, res) => {
+
+      const postData = req.body;
+
+      console.log('postdata', postData);
+      
+      const result = await dbCollection.insertOne(postData);
+      res.send(result);
+    })
+
+
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
