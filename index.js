@@ -35,19 +35,31 @@ async function run() {
     const dbCollection = db.collection("Collection");
 
 
+    //Edit page
     app.patch("/destination/:id", async(req, res) => {
       const {id} = req.params
-      const updated = req.body
-      console.log(updated);
-      
+
+      const updateData = req.body
+
       const result = await dbCollection.updateOne(
         {_id : new ObjectId(id)},
-        {$set : updated}
+        {$set : updateData}
       )
+      res.send(result)
 
+    })
+
+    //Deelete Page
+
+    app.delete("/destination/:id",  async(req, res) => {
+      const {id} = req.params
+      const result = await dbCollection.deleteOne({
+        _id : new ObjectId(id)
+      })
       res.send(result)
     })
 
+    //Details Page
     app.get("/destination/:id", async(req, res) => {
       const {id} = req.params;
       const result = await dbCollection.findOne({
@@ -56,16 +68,16 @@ async function run() {
       res.send(result)
     })
 
+    //data get korar jonne
     app.get("/destination", async(req, res) => {
       const result = await dbCollection.find().toArray();
       res.send(result);
     })
 
+    // Data post korar jonne.
     app.post("/destination", async (req, res) => {
       const postData = req.body;
-
       // console.log("postdata", postData);
-
       const result = await dbCollection.insertOne(postData);
       res.send(result);
     });
@@ -84,7 +96,7 @@ async function run() {
 run().catch(console.dir);
 
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  res.send("Hello express js in Database!");
 });
 
 app.listen(port, () => {
