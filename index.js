@@ -14,8 +14,6 @@ const port = process.env.PORT;
 app.use(cors());
 app.use(express.json());
 
-
-
 const uri = process.env.MONGODB_URI;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -34,45 +32,42 @@ async function run() {
     const db = client.db("WonderLastDev");
     const dbCollection = db.collection("Collection");
 
-
     //Edit page
-    app.patch("/destination/:id", async(req, res) => {
-      const {id} = req.params
+    app.patch("/destination/:id", async (req, res) => {
+      const { id } = req.params;
 
-      const updateData = req.body
+      const updateData = req.body;
 
       const result = await dbCollection.updateOne(
-        {_id : new ObjectId(id)},
-        {$set : updateData}
-      )
-      res.send(result)
-
-    })
+        { _id: new ObjectId(id) },
+        { $set: updateData },
+      );
+      res.send(result);
+    });
 
     //Deelete Page
-
-    app.delete("/destination/:id",  async(req, res) => {
-      const {id} = req.params
+    app.delete("/destination/:id", async (req, res) => {
+      const { id } = req.params;
       const result = await dbCollection.deleteOne({
-        _id : new ObjectId(id)
-      })
-      res.send(result)
-    })
+        _id: new ObjectId(id),
+      });
+      res.send(result);
+    });
 
     //Details Page
-    app.get("/destination/:id", async(req, res) => {
-      const {id} = req.params;
+    app.get("/destination/:id", async (req, res) => {
+      const { id } = req.params;
       const result = await dbCollection.findOne({
-        _id : new ObjectId(id)
-      })
-      res.send(result)
-    })
+        _id: new ObjectId(id),
+      });
+      res.send(result);
+    });
 
     //data get korar jonne
-    app.get("/destination", async(req, res) => {
+    app.get("/destination", async (req, res) => {
       const result = await dbCollection.find().toArray();
       res.send(result);
-    })
+    });
 
     // Data post korar jonne.
     app.post("/destination", async (req, res) => {
